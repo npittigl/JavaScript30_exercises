@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Drum Kit</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="https://fav.farm/🔥" />
+</head>
+<body>
+<!-- MY OWN NOTES: -->
+
+<!-- every key on your keyboard when you press the up or the down when you key up or down event, there's going to be something called a KEY CODE that's associated with that key (www.keycode.info => shows you key code associated with each key you press) -->
+
+<!-- for example key "A" is associated with key code '65'-->
+<!-- so when A key is pressed, its data-key '65' is associated with the audio file for the clap sound -->
+
+<!-- 'data-key' attribute is not a standard attribute -->
+<!-- 'data' attribute created for when coders want to create their own attributes -->
+<!-- in this example we're using data attributes to hook up the data-key keycode with the data-kay audio, so it can file audio file to play and add class to animate that the key was pressed -->
+
+  <div class="keys">
+    <div data-key="65" class="key">
+      <kbd>A</kbd><!-- text describing which key you need to hit on your keyboard -->
+      <span class="sound">clap</span>
+    </div><!-- text describing sound button will produce -->
+    <div data-key="83" class="key">
+      <kbd>S</kbd>
+      <span class="sound">hihat</span>
+    </div>
+    <div data-key="68" class="key">
+      <kbd>D</kbd>
+      <span class="sound">kick</span>
+    </div>
+    <div data-key="70" class="key">
+      <kbd>F</kbd>
+      <span class="sound">openhat</span>
+    </div>
+    <div data-key="71" class="key">
+      <kbd>G</kbd>
+      <span class="sound">boom</span>
+    </div>
+    <div data-key="72" class="key">
+      <kbd>H</kbd>
+      <span class="sound">ride</span>
+    </div>
+    <div data-key="74" class="key">
+      <kbd>J</kbd>
+      <span class="sound">snare</span>
+    </div>
+    <div data-key="75" class="key">
+      <kbd>K</kbd>
+      <span class="sound">tom</span>
+    </div>
+    <div data-key="76" class="key">
+      <kbd>L</kbd>
+      <span class="sound">tink</span>
+    </div>
+  </div>
+
+  <audio data-key="65" src="sounds/clap.wav"></audio>
+  <audio data-key="83" src="sounds/hihat.wav"></audio>
+  <audio data-key="68" src="sounds/kick.wav"></audio>
+  <audio data-key="70" src="sounds/openhat.wav"></audio>
+  <audio data-key="71" src="sounds/boom.wav"></audio>
+  <audio data-key="72" src="sounds/ride.wav"></audio>
+  <audio data-key="74" src="sounds/snare.wav"></audio>
+  <audio data-key="75" src="sounds/tom.wav"></audio>
+  <audio data-key="76" src="sounds/tink.wav"></audio>
+
+<script>
+  // listening for a key up event
+  // get element we are listening for (in this case it's window) - often it's an input, button, div, textarea etc.
+
+  // addEventListener method - takes 2 arguments:
+
+    // 1. event - in this case it's 'keydown' (other event ex. click)
+
+    // 2. callback function (function as a parameter/argument) - gives us the event
+
+// will listen for the keydown event and when that happens, it will run the callback function, which will give us the event object -> intested in the keyCode
+
+  // window.addEventListener('keydown', );
+  // instead of attaching callback function to keydown event, make it its own function called playSound()
+
+  function playSound(e) {
+    // console.log(e) -> console logs that event's object
+    // console.log(e.keyCode) -> console logs that event's key code (ex. when A pressed, console logs its keycode of '65')
+    // now what we need to do is see if we can find an audio element on the page that has a data-key of 65
+
+    // store audio element in a variable and select it based on the data-key => using an attribute selctor [], like in CSS
+
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+
+    // console.log(audio);
+    // console.log(key);
+    // so when hit key, it consoles corresponding audio element for that specific key
+
+    // but if key pressed with no audio element associated with it, returns null. Here we can include an "if statement"
+    
+    if(!audio) return; // stop the function from running in no audio element returned
+
+    // if hit button multiple times while audio file still playing, it will not play again until audio file finished playing - so if you push button many times, you only hear sound every so often
+    
+    audio.currentTime = 0; // so you want to rewind audio file to the start; ie always make sure audio file is at the beginning of its track
+    audio.play();
+    key.classList.add('playing');
+
+  };
+
+
+  // function to remove transition styles
+  function removeTransition(e) {
+    // consoles all the events that happen when button clicked (border-right, border-left, border-bottom, border-top, box-shadow, transform)
+    // console.log(e); 
+
+    // will focus on longest style transition (in this case transform)
+    if(e.propertyName !== 'transform') return;
+    // skip it if it's not a transform
+
+    // console.log(e.propertyName);
+
+    // this = to the key element clicked b/c key got called against the addEventListener
+    // console.log(this);
+    this.classList.remove('playing');
+    // removes class 'playing' from key element when event (transition) occurs on the clicked key
+  }
+
+  const keys = document.querySelectorAll('.key');
+  // console.log(keys); gives you array of all they div.keys
+  // going to loop over each element in this array to add transition end event listener
+  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+
+  window.addEventListener('keydown', playSound);
+</script>
+
+
+</body>
+</html>
+
+<!-- when console log the event, you get the event object, with all its data/info 
+
+  keydown { target: body, key: "a", charCode: 0, keyCode: 65 }
+​
+    altKey: false
+    bubbles: true
+    cancelBubble: false
+    cancelable: true
+    charCode: 0
+    code: "KeyA"
+    composed: true
+    ctrlKey: false
+    currentTarget: null
+    defaultPrevented: false​
+    detail: 0
+    eventPhase: 0
+    explicitOriginalTarget: <body>
+    isComposing: false
+    isTrusted: true​
+    key: "a"
+    keyCode: 65
+    layerX: 0
+    layerY: 0
+    location: 0
+    metaKey: false
+    originalTarget: <body>
+    rangeOffset: 0
+    rangeParent: null
+    repeat: false
+    returnValue: true
+    shiftKey: false
+    srcElement: <body>​
+    target: <body>
+    timeStamp: 37578
+    type: "keydown"
+    view: Window file:///Users/nadiapittiglio/Documents/JavaScript30-master/01%20-%20JavaScript%20Drum%20Kit/index-START.html
+    which: 65
+    <get isTrusted()>: function isTrusted()
+    <prototype>: KeyboardEventPrototype { getModifierState: getModifierState(), initKeyboardEvent: initKeyboardEvent(), charCode: Getter, … }
+-->

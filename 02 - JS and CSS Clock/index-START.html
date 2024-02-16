@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS + CSS Clock</title>
+  <link rel="icon" href="https://fav.farm/🔥" />
+</head>
+<body>
+
+
+    <div class="clock">
+      <div class="clock-face">
+        <div class="hand hour-hand"></div>
+        <div class="hand min-hand"></div>
+        <div class="hand second-hand"></div>
+      </div>
+    </div>
+
+
+  <style>
+    html {
+      background: #018DED url(https://unsplash.it/1500/1000?image=881&blur=5);
+      background-size: cover;
+      font-family: 'helvetica neue';
+      text-align: center;
+      font-size: 10px;
+    }
+
+    body {
+      margin: 0;
+      font-size: 2rem;
+      display: flex;
+      flex: 1;
+      min-height: 100vh;
+      align-items: center;
+    }
+
+    .clock {
+      width: 30rem;
+      height: 30rem;
+      border: 20px solid white;
+      border-radius: 50%;
+      margin: 50px auto;
+      position: relative;
+      padding: 2rem;
+      box-shadow:
+        0 0 0 4px rgba(0,0,0,0.1),
+        inset 0 0 0 3px #EFEFEF,
+        inset 0 0 10px black,
+        0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .clock-face {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform: translateY(-3px); /* account for the height of the clock hands */
+    }
+
+    .hand {
+      width: 50%;
+      height: 6px;
+      background: black;
+      position: absolute;
+      top: 50%;
+      transform-origin: 100%;
+      /* default is 50%, but we want the pivot point of the hand to be at the end of x-axis */
+      transform: rotate(90deg);
+      /* points all hands vertically */
+      transition: all 0.05s;
+      /* hands move like its keeping time */
+      transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
+      /* gives it that realistic ticking feature. Used  inspector to determine cubic-bezier transition times to use */
+    }
+
+  </style>
+
+  <script>
+
+    // store html element of second hand into a variable
+    const secondHand = document.querySelector('.second-hand');
+    // store html element of minute hand into a variable 
+    const minuteHand = document.querySelector('.min-hand');
+    // store html element of hour hand into a variable 
+    const hourHand = document.querySelector('.hour-hand');
+
+    // create function to set date
+    function setDate() {
+      // console.log("hi");
+
+      // create date constructor and store it into the variable 'now'
+      // 'new' keyword allocates memory to the new objects at runtime - the 'new' keyword is followed by a call to a constructor, which instantiates the new object - the new object being today's date
+      // Date() - is built-in method
+      
+      const now = new Date();
+      // console.log(now);
+      // will see Date object with all its properties/methods
+
+      // store the 'getSeconds' method from Date object into a new variable called 'seconds'
+      const seconds = now.getSeconds();
+      // console.log(seconds)
+
+      // now we have to turn the seconds into a base of 10 to help convert seconds to degrees (360 degrees being total degs of a circle) + add 90 degrees to offset initial rotate(90deg)
+      const secondsDegrees = ((seconds / 60) * 360) + 90;
+
+      // apply transform styles to second hand element
+      secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+
+      // store 'getMinutes' methods in variable
+      const minutes = now.getMinutes();
+      // convert minutes into base of 10*360 deg
+      const minutesDegrees = ((minutes / 60) * 360) + 90;
+      // apply transform styles to minute hand element
+      minuteHand.style.transform = `rotate(${minutesDegrees}deg)`;
+
+      // store hours into variable
+      const hours = now.getHours();
+      // convert hours into base of 10 * 360deg
+      const hoursDegrees = ((hours / 12) * 360) + 90;
+      // apply transform styles to hour hand element
+      hourHand.style.transform= `rotate(${hoursDegrees}deg)`;
+    }
+
+    setInterval(setDate, 1000);
+
+    setDate();
+
+  </script>
+</body>
+</html>
