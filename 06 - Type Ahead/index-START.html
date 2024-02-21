@@ -18,6 +18,92 @@
 <script>
 const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
 
+
+
+// fetch returns a promise
+// const promise = fetch(endpoint);
+
+// console.log(promise);
+// it doesn't return the data, it returns a 'promise' -> something will eventually come back from this fetch request
+
+// the data that comes back from our fetch doens't know what kind of data it is yet
+// add .then() to convert the fetched RAW DATA into JSON (JavaScript Object Notation)
+// if you look at the promise raw data you will see it has a json() method
+
+// use spread method (...) to properly copy the dataObject and be able to push the individual city objects into the 'cities' variables (vs. it being pushed as one whole array)
+
+// global variable to store city objects
+const cities = [];
+
+// fetch data using url endpoint (api)
+fetch(endpoint)
+  .then(dataObject => dataObject.json())
+  .then(data => cities.push(...data));
+
+// function to filter through array based on user's search keyword
+// parameters: 
+  // 1. wordToMatch = user's typed search
+  // 2. cities = array of city objects from api
+function findMatches(wordToMatch, cities) {
+  // filter through array
+  return cities.filter(place => {
+    // here we need to figure out if the city or state matches what was searched
+    // use of regex
+    // use of .match method
+    // https://www.w3schools.com/jsref/jsref_match.asp
+
+    // create a new regular expression using new RegExp(), store in a variable
+    // arguments: wordToMatch (user's word search) and any of the flags you want: 
+      // g = global
+      // i = insensitive to case type (doesn't matter if user types in lower or upper case)
+
+    const regex = new RegExp(wordToMatch, 'gi')
+
+    return place.city.match(regex) || place.state.match(regex);
+    // returns array of city or state object if true
+  })
+}
+
+// function to add commas to population values
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+// function to display matched searches
+function displayMatches() {
+  // console.log(this.value);
+
+  // store matched values based on user's typed search & cities array into a variable
+  const matchArray = findMatches(this.value, cities);
+
+  // logs the objects that matches what user is typing as the user types; types 'b' => get an array of all cities or states that start with letter 'b' and as more letters are typed, the array is filtered down more based on the letters matched
+  // console.log(matchArray);
+
+  // map over the matches and append li elements with information from array to ul in DOM
+  const html = matchArray.map(place => {
+    const regex = new RegExp(this.value, 'gi');
+    const cityName = place.city.replace(regex, `<span class="hl">${this.value}</span>`);
+    const stateName = place.state.replace(regex, `<span class="hl">${this.value}</span>`);
+
+    return `
+      <li>
+        <span class="name">${cityName}, ${stateName}</span>
+        <span class="population">${numberWithCommas(place.population)}</span>
+      </li>
+    `;
+  }).join('');
+  // .map will return an array, but we want a string, so add method .join('');
+
+  suggestions.innerHTML = html;
+}
+
+const searchInput = document.querySelector('.search');
+const suggestions = document.querySelector('.suggestions');
+
+searchInput.addEventListener('change', displayMatches);
+// add another event listener for key up
+searchInput.addEventListener('keyup', displayMatches);
+
 </script>
 </body>
 </html>
