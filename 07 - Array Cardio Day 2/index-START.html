@@ -25,17 +25,102 @@
       { text: 'Nice Nice Nice!', id: 542328 }
     ];
 
-    // Some and Every Checks
+    // *******************
+
+    // 1. Some Checks:
+
     // Array.prototype.some() // is at least one person 19 or older?
+
+    // .some() method for arrays
+    const isAdult = people.some(function(person) {
+      // new Date().getFullYear() - built in method to get current year
+      const currentYear = (new Date()).getFullYear();
+      if(currentYear - person.year >= 19) {
+        return true;
+      }
+    });
+    
+    console.log(isAdult);
+    // true
+
+    // console.log({isAdult}); -> will console log as an object { isAdult: true }
+
+    // can make it cleaner code:
+
+    // const isAdult = people.some(person => {
+    //   const currentYear = (new Date()).getFullYear();
+    //   return currentYear - person.year >= 19; 
+    // })
+
+    // cleaner still with implicit return:
+
+    // const isAdult = people.some(person =>
+    //   ((new Date()).getFullYear()) - person.year >= 19);
+
+     // *******************
+    
+    // 2. Every Checks:
+  
     // Array.prototype.every() // is everyone 19 or older?
 
-    // Array.prototype.find()
+    const allAdults = people.every(person =>
+      ((new Date()).getFullYear()) - person.year >= 19);
+
+    console.log({allAdults});
+    // false
+
+    // *******************
+
+    // 3. Array.prototype.find()
+
     // Find is like filter, but instead returns just the one you are looking for
     // find the comment with the ID of 823423
 
-    // Array.prototype.findIndex()
+    const comment = comments.find(function(comment) {
+      if(comment.id === 823423) {
+        return true;
+      }
+    });
+
+    console.log(comment);
+    //  { text: 'Super good', id: 823423 }
+
+    // written as arrow function:
+    // const comment = comments.find(comment => 
+    //   comment.id === 823423);
+
+    // ********************
+
+    // 4. Array.prototype.findIndex()
+
     // Find the comment with this ID
+    const index = comments.findIndex(comment => comment.id === 823423);
+
+    console.log(index);
+    // 1 
+
     // delete the comment with the ID of 823423
+    comments.splice(index, 1);
+    // 1st value = index number you start at (in this case it's one)
+    // 2nd value = number of indexes you want removed, in this case just one (starts removing from the index starting point)
+
+    console.table(comments);
+
+    // OR
+    // Redux world -> create a new array, using spread to copy array
+
+    const newComments = [
+      // make copy of comments before the starting index of interest
+      // start at 0 and end at index (1 in this case)
+      ...comments.slice(0, index),
+      // then copy array from index AFTER the index you want removed (index + 1 = 2), copies rest of array from index 2 on until end of array
+      ...comments.slice(index + 1)
+    ];
+
+    console.table(newComments);
+
+    // still have original array
+    console.table(comments);
 
   </script>
 </body>
