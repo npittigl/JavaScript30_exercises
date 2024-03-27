@@ -32,6 +32,11 @@
   // when lines join, they're rounded at corners
   ctx.lineJoin = 'round';
   ctx.lineCap = 'round';
+  ctx.lineWidth = 50; // makes line thicker/thinner
+
+  // global composite operation: can play around with the different blend modes
+  // 'multiply' - when drawing overlaps, turns colour to black
+  ctx.globalCompositeOperation = 'multiply';
 
   // 5. Need some 'dummy' variables
 
@@ -43,10 +48,21 @@
     let lastX = 0; 
     let lastY = 0;
 
+    // C. fun with HTML colours! hsl()
+    let hue = 0;
+    let direction = true; // going to be drawing up
+
+
   // 6. Create a draw function - will be called whenever we move the mouse on top of the canvas
   function draw(e) {
     if(!isDrawing) return;  // stops fxn from running when they are not moused down
     console.log(e); // mousemove event object has lots of information about the event (ex. offsetX, offsetY etc.)
+
+    // style the strokes (hue, saturation, lightness)
+    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+
+    // can change stroke width as hue changes
+    // ctx.lineWidth = hue;
 
     // 1. start a path
     ctx.beginPath();
@@ -61,6 +77,26 @@
     // lastY = e.offsetY;
     // can destructure above so all in one line
     [lastX, lastY] = [e.offsetX, e.offsetY];
+
+    // increment hue so use other colours on the spectrum
+    hue++;
+    if(hue >= 360) {
+      hue = 0;
+    }
+
+    // changes direction to false (down)
+    if(ctx.lineWidth >= 50 || ctx.lineWidth <= 1) {
+      direction = !direction
+    }
+
+    // increment/decrement line width based on direction
+    if(direction) {
+      // increment width from 0 to 100
+      ctx.lineWidth++;
+    } else {
+      // decrement width from 100 to 0
+      ctx.lineWidth--;
+    }
   }
 
   // 7. add event listener (mousemove is the event) to canvas element, with 'draw' as call back function
@@ -77,8 +113,15 @@
 
   canvas.addEventListener('mouseout', () => isDrawing = false); // when mouse is off screen
 
-  // ****** left off at 9:58 in video
+  //visit website: www.mother-effinghsl
+  // hsl() -> programmatically select pieces of the rainbow
+  // hsl:
+    // h = hue
+    // s = saturation
+    // l = lightness
 
+    // 0 = red
+    // 360 = other end of spectrum
 </script>
 
 <style>
