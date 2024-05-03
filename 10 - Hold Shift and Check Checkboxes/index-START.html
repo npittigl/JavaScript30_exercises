@@ -97,6 +97,43 @@
   </div>
 
 <script>
+  // Gmail style interaction for holding shift while you select multiple checkboxes
+
+  // access check box
+  const checkboxes = document.querySelectorAll('.inbox input[type="checkbox"]');
+
+  // store last checked inbox
+  let lastChecked;
+
+  // create call back function 
+  function handleCheck(event) {
+    // boolean variable to determine if we're in area we wish to check (ie. checkboxes in between 2 checked inboxes) => true
+    let inBetween = false;
+
+    // check if inbox checked AND
+    // check if they have the shift key down
+    if(event.shiftKey && this.checked) {
+      // loop over all inboxes
+      checkboxes.forEach(checkbox => {
+        console.log(checkbox);
+        // whether it's one we checked or the lastchecked -> can do it from top or bottom
+        if(checkbox === this || checkbox === lastChecked) {
+          inBetween = !inBetween;
+          console.log("start to check inbtwn");
+        }
+
+        // if checkboxes fall in that inbetween area between first and last checked (i.e if flag variable 'inBetween' = true), then set inbox to checked
+        if(inBetween) {
+          checkbox.checked = true;
+        }
+      });
+    }
+
+    lastChecked = this;
+  }
+
+  // add event listener to each checkbox
+  checkboxes.forEach(checkbox => checkbox.addEventListener('click', handleCheck));
 </script>
 </body>
 </html>
