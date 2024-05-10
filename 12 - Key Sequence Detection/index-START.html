@@ -7,6 +7,35 @@
     <link rel="icon" href="https://fav.farm/🔥" />
   </head>
   <body>
-    <script></script>
+    <!-- Key sequencing detection: means when someone inputs a certain sequence of keys into the window or input, something needs to happen -->
+
+    <!-- What this is used most for online is the KONAMI code -->
+
+    <!-- Konami code is a cheat code -->
+    <script>
+      // empty array to store key names
+      const pressed = [];
+
+      // secret code (key sequence)
+      const secretCode = "wesbos";
+
+      // listen for pressed keys
+      window.addEventListener('keyup', (e) => {
+        console.log(e.key);
+        pressed.push(e.key);
+        // secret code is only so many characters long, so limit array to number of elements based on secretCode.length
+        // start counting from the end
+        pressed.splice(-secretCode.length - 1, pressed.length - secretCode.length);
+
+        // check if array has key sequence we are looking for
+        // convert pressed array into a string
+        if(pressed.join('').includes(secretCode)) {
+          console.log("Ding! Ding!");
+          // if pressed array includes exact key sequence in secretCode, run this function (adds unicorns to page):
+          cornify_add();
+        }
+        console.log(pressed);
+      });
+    </script>
   </body>
 </html>
