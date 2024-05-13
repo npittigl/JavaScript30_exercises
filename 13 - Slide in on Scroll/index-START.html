@@ -44,6 +44,8 @@
   </div>
 
   <script>
+    // debounce function sourced from internet
+    // you pass it a function and it will run debounce all the time when we scroll BUT will only run the checkSlide() function once every 20ms ()
     function debounce(func, wait = 20, immediate = true) {
       var timeout;
       return function() {
@@ -58,6 +60,47 @@
         if (callNow) func.apply(context, args);
       };
     }
+
+    // select all the images we need to be listening for; by default all imgs are hidden (opacity: 0)
+    const  sliderImages = document.querySelectorAll('.slide-in');
+
+    // function that runs every time user scrolls
+    function checkSlide() {
+      // loop over every image and figure out where each img needs to be shown
+      sliderImages.forEach(sliderImage => {
+        // do some math to decide whether it's on page or not
+        // use window.scrollY = tells you how many pixels you've scrolled down from top of browser - but we need to know pixels at bottom of our window
+        // add .innerHeight = gives us the px level for where you currently are at the bottom of that
+        // minus half way thru image's height
+        const slideInAt = (window.scrollY + window.innerHeight) - sliderImage.height / 2;
+
+        // need to know bottom of image; if we scroll past image it should slide itself out
+        // .offsetTop = tells us how far from the top of actual window the image is
+        // add image height
+        const imageBottom = sliderImage.offsetTop + sliderImage.height;
+
+        // need to figure out:
+        // 1. is image half shown?
+        const isHalfShown = slideInAt > sliderImage.offsetTop;
+        // 2. is image not scrolled past?
+        const isNotScrolledPast = window.scrollY < imageBottom;
+
+        // if statement
+        if(isHalfShown && isNotScrolledPast) {
+          sliderImage.classList.add('active');
+        } else {
+          sliderImage.classList.remove('active')
+        }
+      });
+    }
+
+    // add event listener to window
+    // this can be performance issue - so we need to 'debounce' it
+    // debounce means we will run this function at most however many seconds set in debounce function (ex. 20ms)
+    // wrap callback function in debounce()
+    window.addEventListener('scroll', debounce(checkSlide));
+
+
 
   </script>
 
