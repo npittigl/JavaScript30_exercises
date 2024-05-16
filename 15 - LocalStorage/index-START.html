@@ -27,9 +27,55 @@
   </div>
 
 <script>
+  // form element
   const addItems = document.querySelector('.add-items');
+  // ul element where li's of tapas dishes will be appended
   const itemsList = document.querySelector('.plates');
+  // store data in an array of objects
   const items = [];
+
+  // function to add item
+  function addItem(event) {
+    // prevent page reload
+    event.preventDefault();
+
+    // capture user input from form
+    const text = (this.querySelector('[name=item]')).value;
+
+    // object
+    const item = {
+      text: text,
+      done: false
+    }
+
+    // add user input to global array
+    items.push(item);
+
+    // call fn to append items to list
+    populateList(items, itemsList);
+
+    // clear form
+    this.reset();
+  }
+
+  // function to populate list
+  // use parameters to make fn more resilient and useable
+  function populateList(plates = [], platesList) {
+    // map over items array
+    platesList.innerHTML = plates.map((plate, index) => {
+      return `
+        <li>
+          <input type="checkbox" data-index=${index} id="item${index}" ${ plate.done ? 'checked' : '' }/>
+          <label for="item${index}">${plate.text}</label>
+        </li>
+      `;
+    }).join('');
+  }
+
+  // listen for submit event
+  addItems.addEventListener('submit', addItem);
+
+  // *** how to make list persist @ 15:03
 
 </script>
 
