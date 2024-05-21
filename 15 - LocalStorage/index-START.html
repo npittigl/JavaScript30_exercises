@@ -31,8 +31,13 @@
   const addItems = document.querySelector('.add-items');
   // ul element where li's of tapas dishes will be appended
   const itemsList = document.querySelector('.plates');
-  // store data in an array of objects
-  const items = [];
+  // store data in an array of objects; 
+  // JSON.parse() -> converts stringified text back to an array
+  // 'items' doesn't exist on page load b/c it is an empty array at first so we use operand:
+    // items = parsed strings back to array 
+      // but if nothing in local storage, then 
+        // items = empty array
+  const items = JSON.parse(localStorage.getItem('items')) || [];
 
   // function to add item
   function addItem(event) {
@@ -54,6 +59,11 @@
     // call fn to append items to list
     populateList(items, itemsList);
 
+    // set items array to local storage
+    // 'items' is name of key in local storage object
+    // need to stringify data before passing it in localStorage.setItem b/c it only takes strings -> JSON.parse() will reverse stringify
+    localStorage.setItem('items', JSON.stringify(items));
+
     // clear form
     this.reset();
   }
@@ -72,10 +82,56 @@
     }).join('');
   }
 
+  // function to toggle 'done' state
+  // where to call this event? need to be careful not to create inputs (list items with checkboxes) AFTER we listen for them -> won't have event listeners attached to them
+  // put event listener on <ul> instead of the <li> children directly (ul is the responsible parent that passes event listener to negligient li child); that way you can add more li's and not worry about the event listener being directly attached to that li
+  function toggleDone(event) {
+    // if target doesn't match what we're looking for (input), skip it (return)
+    if(!event.target.matches('input')) return;
+
+    // otherwise:
+
+    // store target input
+    const el = event.target;
+    // store index value in variable
+    const index = el.dataset.index;
+    // set property 'done' to the opposite value
+    items[index].done = !items[index].done;
+    // set updated items to local storage
+    localStorage.setItem('items', JSON.stringify(items));
+    // show updated items on browser
+    populateList(items, itemsList);
+  }
+
   // listen for submit event
   addItems.addEventListener('submit', addItem);
+  // listen for click on itemsList (ul)
+  itemsList.addEventListener('click', toggleDone);
 
-  // *** how to make list persist @ 15:03
+  // call populateList function so that on page load it populates list & items are converted back to array from string (JSON.parse -> but use this when we define 'items' array at top of app)
+  populateList(items, itemsList);
+
+
+  // HOW TO MAKE LIST PERSIST IN LOCAL STORAGE:
+
+  // you have an object in the browser called 'local storage'; text saved to this domain  (computer by computer, browser by browser, website by website basis)
+
+    // => store data in local storage & when you reload the page, you'll be able to grab this text out of local storage
+
+    // go to dev tools (in Chrome it's the Applications tab), click on Storage (Firefox) and go to local storage
+
+      // click on the domain 
+      // will see there is a key of items and a value of something else
+
+      // looks like an object but really a key-value store -> can only use strngs in local storage
+  
+  // every time we add item -> put it into local storage & update local storage every single time
+
+  // on page load we check if there is something in local storage, if not, we fall back to an empty array
+
+  // need to persist the toggling of items (change "done: false" to "done: true")
+
+// CHALLENGE: add check all & delete all buttons
 
 </script>
 
