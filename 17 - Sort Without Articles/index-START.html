@@ -49,6 +49,40 @@
 <script>
 const bands = ['The Plot in You', 'The Devil Wears Prada', 'Pierce the Veil', 'Norma Jean', 'The Bled', 'Say Anything', 'The Midway State', 'We Came as Romans', 'Counterparts', 'Oh, Sleeper', 'A Skylit Drive', 'Anywhere But Here', 'An Old Dog'];
 
+// function that takes band name as the argument and uses regex & trim to return band name w/o any articles (replace it with '') or extra spaces
+function strip(bandName) {
+  return bandName.replace(/^(a |the |an)/i, '').trim();
+}
+
+// sort the band names & store in a new variable
+// .sort() can take function as an argument; a & b parameters is comparing each word to determine how to alphabetize (sort) list
+// can use > even with strings
+// if string = 1, place at top of list etc.
+const sortedBands = bands.sort(function (a, b) {
+  return strip(a) > strip(b) ? 1 : -1;
+
+  // if(strip(a) > strip(b)) {
+  //   return 1;
+  // } else {
+  //   return -1;
+  // }
+});
+
+// OR:
+
+// const sortedBands = bands.sort((a,b) => strip(a) > strip(b) ? 1 : -1);
+
+
+// append band names to ul in DOM
+// map over sortedBands array & insert band name in <li>
+// join array as one big string (if don't, will see , comma between each <li>)
+document.querySelector('#bands').innerHTML = sortedBands.map(band => `<li>${band}</li>`).join('');
+
+console.log(sortedBands);
+
+// ** NOTE: when you set something to innerHTML that is NOT a string, like an array in this case, it will by default call toString() on it & put a comma between each item
+
+// adding .join('') at the end will join all items in an array into one big string, rather than a bunch of strings with a comma in between
 
 </script>
 
